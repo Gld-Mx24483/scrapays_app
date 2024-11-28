@@ -1,4 +1,4 @@
-package com.scrapays_app
+package com.scrapaysapp
 
 import android.app.Application
 import com.facebook.react.PackageList

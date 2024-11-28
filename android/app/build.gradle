@@ -77,13 +77,19 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.scrapays_app"
+    namespace "com.scrapaysapp"
     defaultConfig {
-        applicationId "com.scrapays_app"
+        applicationId "com.scrapaysapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+//        manifestPlaceholders = [auth0Domain: "dev-mr0rccx8miz375v2.us.auth0.com", auth0Scheme: "${applicationId}.auth0"]
+         manifestPlaceholders = [
+          appAuthRedirectScheme: "com.scrapaysapp",
+          auth0Domain: "dev-mr0rccx8miz375v2.us.auth0.com",
+          auth0Scheme: "${applicationId}.auth0"
+         ]
     }
     signingConfigs {
         debug {
@@ -116,4 +122,5 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    implementation project(':react-native-auth0')
 }

@@ -1,4 +1,4 @@
-package com.scrapays_app
+package com.scrapaysapp
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
