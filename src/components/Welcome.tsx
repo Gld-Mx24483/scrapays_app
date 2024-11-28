@@ -1,11 +1,12 @@
 // src/components/Welcome.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   Dimensions,
   Image,
+  NativeModules,
 } from 'react-native';
 import tw from 'twrnc';
 import Swiper from 'react-native-swiper';
@@ -13,9 +14,16 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useAuth0 } from 'react-native-auth0';
 
 const { width, height } = Dimensions.get('window');
+const { DeviceInfoModule } = NativeModules;
 
 const Welcome: React.FC = () => {
-  const [activeIndex, setActiveIndex] = useState(0); 
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [deviceInfo, setDeviceInfo] = useState<{
+    model?: string;
+    manufacturer?: string;
+    androidVersion?: string;
+    batteryLevel?: number;
+  }>({});
   const { authorize } = useAuth0();
   
   const slides = [
@@ -23,6 +31,24 @@ const Welcome: React.FC = () => {
     require('../assets/images/recycle2.jpg'),
     require('../assets/images/recycle3.jpg'),
   ];
+
+  useEffect(() => {
+    const fetchDeviceInfo = async () => {
+      try {
+        if (DeviceInfoModule?.getDeviceInfo) {
+          const info = await DeviceInfoModule.getDeviceInfo();
+          console.log('Device Info:', info);
+          setDeviceInfo(info);
+        } else {
+          console.error('DeviceInfoModule is not properly initialized');
+        }
+      } catch (error) {
+        console.error('Failed to fetch device info:', error);
+      }
+    };
+  
+    fetchDeviceInfo();
+  }, []);
 
   const login = async () => {
     try {
@@ -65,6 +91,19 @@ const Welcome: React.FC = () => {
         >
           <Text style={tw`text-cyan-300 text-lg font-semibold tracking-wider`}>Login with Auth0</Text>
         </TouchableOpacity>
+
+        {/* Device Info Display */}
+        <View style={tw`mt-4 bg-white/10 p-4 rounded-lg`}>
+          <Text style={tw`text-white text-sm`}>
+            Device: {deviceInfo.manufacturer} {deviceInfo.model}
+          </Text>
+          <Text style={tw`text-white text-sm`}>
+            Android Version: {deviceInfo.androidVersion}
+          </Text>
+          <Text style={tw`text-white text-sm`}>
+            Battery Level: {deviceInfo.batteryLevel?.toFixed(2)}%
+          </Text>
+        </View>
       </View>
       {/* Minimalist Dots */}
       <View style={tw`absolute bottom-12 left-0 right-0 flex-row justify-center items-center`}>
