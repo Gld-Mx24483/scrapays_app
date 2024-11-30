@@ -1,4 +1,3 @@
-// android/app/src/main/java/com/scrapays_app/modules/DeviceInfoModule.kt
 package com.scrapays_app.modules
 
 import android.content.Context

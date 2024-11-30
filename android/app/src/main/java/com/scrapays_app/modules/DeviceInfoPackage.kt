@@ -1,4 +1,3 @@
-// android/app/src/main/java/com/scrapays_app/modules/DeviceInfoPackage.kt
 package com.scrapays_app.modules
 
 import com.facebook.react.ReactPackage
