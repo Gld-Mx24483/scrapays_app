@@ -1,4 +1,3 @@
-//auth0-react-native.d.ts
 declare module 'auth0-react-native' {
     export interface Credentials {
       accessToken: string;
@@ -9,7 +8,7 @@ declare module 'auth0-react-native' {
     }
   
     export interface DecodeTokenOptions {
-      // Add any specific options if needed
+      
     }
   
     export interface WebAuthAuthorizeOptions {

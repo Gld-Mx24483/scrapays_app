@@ -1,4 +1,3 @@
-// src/context/AuthContext.tsx
 import React, { createContext, useContext } from 'react';
 import { useAuth0 } from 'react-native-auth0';
 
