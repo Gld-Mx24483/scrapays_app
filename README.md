@@ -59,10 +59,91 @@ Now that you have successfully run the app, let's modify it.
 
 You've successfully run and modified your React Native App. :partying_face:
 
-### Now what?
+# Android Build Configuration
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+## Overview
+The build configuration files (build.gradle) were updated to support the integration of Auth0 and optimize the React Native project. The changes ensure proper authentication handling, React Native linking, and compatibility with Android build requirements.
+
+## Key Changes
+
+### 1. Plugins Applied
+```
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.facebook.react"
+apply plugin: "com.facebook.react.rootproject"
+```
+
+`com.android.application`: Standard plugin for Android app builds.
+
+`org.jetbrains.kotlin.android`: Adds Kotlin support for Android.
+
+`com.facebook.react` & `com.facebook.react.rootproject`: Ensure React Native's Gradle plugin is enabled, handling React Native autolinking and build tasks.
+
+### 2. React Autolinking Setup
+```
+react {
+    autolinkLibrariesWithApp()
+}
+```
+
+`autolinkLibrariesWithApp()`: Automatically links React Native libraries, ensuring that dependencies like `react-native-auth0` are properly integrated.
+
+
+### 3. Manifest Placeholders for Auth0
+```
+defaultConfig {
+    ...
+    manifestPlaceholders = [
+        appAuthRedirectScheme: "com.scrapaysapp",
+        auth0Domain: "dev-mr0rccx8miz375v2.us.auth0.com",
+        auth0Scheme: "${applicationId}.auth0"
+    ]
+}
+```
+
+`appAuthRedirectScheme`: Specifies the URI scheme for Auth0 redirection (com.scrapaysapp).
+
+`auth0Domain`: Auth0 domain used for authentication.
+
+`auth0Scheme`: Dynamic URI scheme combining the app’s applicationId with .auth0 to handle callbacks.
+
+### 4. Dependency Management
+```
+dependencies {
+    implementation("com.facebook.react:react-android")
+    implementation('com.facebook.soloader:soloader:0.10.5')
+    implementation project(':react-native-auth0')
+    
+    ...
+}
+```
+
+`react-android`: Core React Native dependency for Android.
+
+`react-native-auth0`: Auth0 library for handling authentication in React Native.
+
+`soloader`: Helps manage native libraries efficiently.
+
+### 5. Build Script (buildscript Section) Updates
+
+```
+buildscript {
+    ext {
+        buildToolsVersion = "35.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 35
+        targetSdkVersion = 34
+        ndkVersion = "26.1.10909125"
+        kotlinVersion = "1.9.24"
+    }
+    ...
+}
+```
+
+SDK Versions: Updated `compileSdkVersion`, `targetSdkVersion`, and `minSdkVersion` for compatibility with modern Android.
+
+Kotlin and NDK Versions: Ensures compatibility with Kotlin and Native Development Kit (NDK) versions.
 
 # Troubleshooting
 
