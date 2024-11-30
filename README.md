@@ -1,10 +1,20 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+This is a [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Getting Started
+# React Native TypeScript: Scrapay Mobile Application
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Step 1: Install Dependencies
+Ensure all dependencies are installed. Run the following command from the root directory:
 
-## Step 1: Start the Metro Server
+```
+# Using npm
+npm install
+
+# OR using Yarn
+yarn install
+```
+
+
+## Step 2: Start the Metro Server
 
 First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
 
@@ -17,10 +27,11 @@ npm start
 # OR using Yarn
 yarn start
 ```
+Tip: Let Metro Bundler run in its _own_ terminal.
 
-## Step 2: Start your Application
+## Step 3: Start the Application
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+ Open a _new_ terminal from the _root_ of the React Native project. Run the following command to start the _Android_ app:
 
 ### For Android
 
@@ -28,36 +39,64 @@ Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _roo
 # using npm
 npm run android
 
+# OR using npx
+npx react-native run-android
+
 # OR using Yarn
 yarn android
 ```
 
-### For iOS
+## Run the App on an Android Emulator (Optional)
+To target a specific Android emulator, run the following command:
 
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+```
+npx react-native run-android --device emulator-<emulator_id>
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+Replace <emulator_id> with the ID of your desired emulator, which can be listed using the following command:
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+```
+emulator -list-avds
 
-## Step 3: Modifying your App
+#OR
 
-Now that you have successfully run the app, let's modify it.
+adb devices
+```
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+Example:
+```
+npx react-native run-android --device emulator-Pixel_5_API_33
+```
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+If everything is set up _correctly_, you should see the application running on your _Android Emulator_ or _iOS Simulator_ shortly provided the emulator/simulator has been set up correctly.
 
-## Congratulations! :tada:
+## Step 4: Clean and Rebuild the Android Project
+If you encounter issues or need a fresh build, use the following commands to clean and rebuild the Android project:
 
-You've successfully run and modified your React Native App. :partying_face:
+````
+cd android
+````
+### Clean the Build
+```
+./gradlew clean
+```
+
+### Rebuild the Project
+```
+./gradlew build
+```
+
+## Step 5: Build a Release APK (Android)
+To build a release version of the APK for distribution, run the following command from the `android/` directory:
+
+```
+cd android
+./gradlew assembleRelease
+```
+
+The generated APK will be located in the following directory:
+`android/app/build/outputs/apk/release/`
+
 
 # Android Build Configuration
 
@@ -145,9 +184,95 @@ SDK Versions: Updated `compileSdkVersion`, `targetSdkVersion`, and `minSdkVersio
 
 Kotlin and NDK Versions: Ensures compatibility with Kotlin and Native Development Kit (NDK) versions.
 
-# Troubleshooting
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+# React Native vs. React Web Architecture
+
+This section explains the key architectural differences between React Native and React for the web, focusing on the bridge between JavaScript and native code in React Native, and Android-specific considerations.
+
+## 1. Architectural Differences
+### React (Web)
+React is a JavaScript library for building user interfaces, primarily for web applications. Its core principle revolves around the Virtual DOM (Document Object Model), which efficiently updates the real DOM in response to changes in application state.
+
+Components: React uses functional or class-based components to create UI.
+
+DOM Manipulation: React manipulates the DOM using the Virtual DOM for optimal rendering performance.
+
+Browser APIs: React directly interacts with the browser APIs to manage elements, events, and rendering.
+
+### React Native
+React Native enables the development of mobile applications using JavaScript and React concepts but targets mobile platforms like iOS and Android instead of the web. It does not manipulate a DOM; instead, it renders native UI components.
+
+Components: React Native uses native components like Text, View, Button, and Image instead of web-based div, span, or button.
+
+Native Rendering: React Native bridges JavaScript and the device’s native UI components, rendering components directly to the platform’s UI.
+
+No DOM: Instead of using the DOM, it uses native widgets provided by iOS and Android.
+
+
+## 2. The React Native Bridge
+React Native's architecture centers around a JavaScript-to-Native Bridge that enables the JavaScript code to interact with native code (Java for Android and Objective-C/Swift for iOS).
+
+### How the Bridge Works:
+
+JavaScript Thread: Runs the React application logic.
+
+Bridge: Acts as a communication layer between the JavaScript and native code.
+
+Native Modules: The bridge communicates with native components via asynchronous batched message passing.
+
+### Key Points:
+Asynchronous Communication: React Native sends JSON messages over the bridge, avoiding UI blocking and ensuring smooth performance.
+
+Batched Updates: Updates are batched to reduce the number of native-to-JavaScript transitions.
+
+Performance Consideration: Performance-intensive tasks (e.g., animations, heavy computations) may require direct native code for optimization.
+
+
+
+## 3. Android-Specific Considerations in React Native Development
+Developing for Android using React Native involves various platform-specific details, such as project configuration, UI considerations, and handling device-specific optimizations.
+
+### 3.1 Project Configuration
+React Native Android projects rely on the Gradle Build System for build automation, dependency management, and configuring project settings. Here are some essential configurations and tools used in a typical build.gradle file:
+
+### NDK Support: 
+Native libraries for performance-sensitive tasks can be implemented using the Native Development Kit (NDK).
+
+### buildToolsVersion
+Description: Specifies the version of the Android Build Tools used by Gradle to compile and package the application.
+
+Purpose: Ensures the app is built with the latest tools, providing access to the latest Android features and optimizations.
+
+### minSdkVersion
+Description: Defines the minimum Android API level required to run the app.
+
+Purpose: Ensures that the app runs only on devices with an API level equal to or greater than the specified value. It prevents the app from being installed on older, unsupported versions.
+
+### compileSdkVersion
+Description: Specifies the Android API level that the app is compiled against.
+
+Purpose: Allows the app to use the latest APIs and features available in the specified SDK version. However, it doesn't affect the devices on which the app can be installed.
+
+
+### targetSdkVersion
+Description: Defines the target Android API level the app is optimized for.
+
+Purpose: Indicates the API level for which the app is designed, signaling compatibility with the latest Android features and behavior changes introduced in that SDK. It does not restrict installation on devices with lower API levels (as long as they meet minSdkVersion).
+
+## 3.2 UI Considerations
+Layout Differences: Android uses Flexbox for layout via View components, similar to CSS flex but adapted for mobile.
+
+Native Widgets: React Native’s Button or Picker components behave differently on Android compared to iOS due to underlying native components.
+
+## 3.3 Permissions and Manifests
+Android applications require explicit permission declarations in AndroidManifest.xml:
+```
+<manifest>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    ...
+</manifest>
+```
 
 # Learn More
 
